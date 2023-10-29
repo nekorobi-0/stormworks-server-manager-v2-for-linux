@@ -14,27 +14,22 @@ function login() {
          return result;
         };
        })();
-    if (id in getCookie){//クッキーに情報がある場合
+    if ("id" in getCookie){//クッキーに情報がある場合
         window.location.href('menu.html')//ユーザーページにリダイレクト
     } else{//クッキーに情報がない場合の処理
-        let misskeyurl = document.getElementById('misskeyurl');
-        xhr.open('POST', `https://${location.origin}/api/login_with_misskey`);
+        var xhr = new XMLHttpRequest();
+        let input = document.getElementById('misskeyurl');
+        let misskeyurl = input.value;
+        console.log(misskeyurl);
+        xhr.open('POST', `${location.origin}/api/login_with_misskey`);
         xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
         xhr.send(misskeyurl);
-        xhr.onreadystatechange = function(){
-            if ((xhr.readyState == 4) && (xhr.status == 200)) {
-                _return = JSON.parse(xhr.responseText);
-                for (let key in _return){
-                    document.cookie = key +'=' + _return[key];
-                };
-            };
-        };
     };
 };
 function logon() {//サーバーにみすきーの認証をリクエスト
     var xhr = new XMLHttpRequest();
     logout()
-    xhr.open('POST', `https://${location.origin}/api/logon_url`);
+    xhr.open('POST', `${location.origin}/api/logon_url`);
     xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
     xhr.send( 'rocamisaki is very hentai' );
     xhr.onreadystatechange = function(){

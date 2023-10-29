@@ -14,10 +14,11 @@ maintainancing = False
 pages_txt= {}
 #load all users
 users = []
+id = []
 files = [os.path.basename(p) for p in glob.glob('data/users/**', recursive=True)
        if os.path.isfile(p)]
 for file in files:
-    users.append(user(f"data/uers/{file}","json"))
+    users.append(user.user(f"data/users/{file}","json"))
 print("ended user importing")
 #/load alll users
 #load all pages
@@ -29,6 +30,8 @@ for page in files:
     pages_txt[page] = txt
 print("ended webserver importing")
 #/load all pages
+#load all profiles
+#/load all profiles
 
 with open("config.json","r")as f:
     data = json.load(f)
@@ -70,23 +73,32 @@ class S(BaseHTTPRequestHandler):
         self.end_headers()
     def do_GET(self):
         req = self.requestline[5:].split()[0]
-        if req =="logon.html":
+        if req[:9] == "api/auth/":
+            try:
+                id.append(int(req[9:]))
+            except ValueError:
+                pass
+            self.redirect("menu.html")
+            svt= pages_txt["success.html"]
+        elif req =="logon.html":
             svt = pages_txt[""]
         elif req in pages_txt:
             svt = pages_txt[req]
         else:
             svt = pages_txt["404.html"]
+        self._set_headers()
         self.wfile.write(svt.encode())
     def do_POST(self):
+        global id
         req = self.requestline[5:].split()[0]
-        if req[:3] == "api":
-            if req[3:]=="logon_url":
-                t = threading.Thread(target=session.miauth,args=(self,users))
-                t.start()
-            elif req[3:] == "login_with_misskey":
-                t = threading.Thread(target=session.misskeylogin,args=(self,users,mk))
-            elif req[3:7] == "auth":
-                id = req[7:]
+        print(self.requestline)
+        if req[1:4] == "api":
+            print(req[5:])
+            if req[5:]=="logon_url":
+                session.miauth(self,users)
+                print(users)
+            elif req[5:] == "login_with_misskey":
+                session.misskeylogin(self,users,mk,id)
 
 
 def run_http_server(server_class=HTTPServer, handler_class=S, port=8888):
@@ -97,8 +109,7 @@ def run_http_server(server_class=HTTPServer, handler_class=S, port=8888):
 	print('HTTP server started....')
 	httpd.serve_forever()
 
-print(mk.users_show("9grxrmn5np")['avatarUrl'])
-mk.notes_create(text="@null これはテストです",visibility="specified",visible_user_ids=["9grxrmn5np"])
 t = threading.Thread(target=run_http_server)
 t.start()
 asyncio.run(getTL(token))
+print("fin")
