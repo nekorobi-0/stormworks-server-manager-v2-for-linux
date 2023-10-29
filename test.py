@@ -1,7 +1,4 @@
-import json
-from misskey import Misskey
-with open("config.json","r")as f:
-    data = json.load(f)
-token = data["token"]
-mk = Misskey("stormskey.works",i=token)
-print(mk.i())
+for i in range(1000):
+    if i > 100:
+        break
+print(i)

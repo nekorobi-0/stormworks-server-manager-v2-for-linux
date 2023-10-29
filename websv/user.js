@@ -14,26 +14,13 @@ function login() {
          return result;
         };
        })();
-    if (id in getCookie){
-        var fd = new FormData();
-        fd.append('id',getCookie['id']);
-        fd.append('seckey',getCookie['seckey']);
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', `https://${location.origin}/api/login_with_cookie`);
-        xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-        xhr.send(fd);
-        xhr.onreadystatechange = function(){
-            if ((xhr.readyState == 4) && (xhr.status == 200)) {
-                _return = JSON.parse(xhr.responseText);
-                for (let key in _return){
-                    document.cookie = key +'=' + _return[key];
-                };
-            };
-        };
-    } else{
+    if (id in getCookie){//クッキーに情報がある場合
+        window.location.href('menu.html')//ユーザーページにリダイレクト
+    } else{//クッキーに情報がない場合の処理
+        let misskeyurl = document.getElementById('misskeyurl');
         xhr.open('POST', `https://${location.origin}/api/login_with_misskey`);
         xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-        xhr.send('stormskey');
+        xhr.send(misskeyurl);
         xhr.onreadystatechange = function(){
             if ((xhr.readyState == 4) && (xhr.status == 200)) {
                 _return = JSON.parse(xhr.responseText);
@@ -52,14 +39,12 @@ function logon() {//サーバーにみすきーの認証をリクエスト
     xhr.send( 'rocamisaki is very hentai' );
     xhr.onreadystatechange = function(){
         if ((xhr.readyState == 4) && (xhr.status == 200)) {
-            _return = JSON.parse(xhr.responseText);
-            url = _return["url"];
-            var div = document.getElementById("MisskeyAuth");
-            div.innerHTML = `<button type="button" class="btn btn-outline-success btn-lg" onclink ="window.open='${url}'">押してください</button>`
+            url = xhr.responseText;
+            open(url);
         };
     };
 };
-function logout(){
+function logout(){//クッキー全削除
     const cookies = document.cookie.split(';')
     for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i]

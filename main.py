@@ -83,8 +83,10 @@ class S(BaseHTTPRequestHandler):
             if req[3:]=="logon_url":
                 t = threading.Thread(target=session.miauth,args=(self,users))
                 t.start()
-        self._set_headers()
-        self.wfile.write("msg".encode())
+            elif req[3:] == "login_with_misskey":
+                t = threading.Thread(target=session.misskeylogin,args=(self,users,mk))
+            elif req[3:7] == "auth":
+                id = req[7:]
 
 
 def run_http_server(server_class=HTTPServer, handler_class=S, port=8888):
@@ -97,4 +99,6 @@ def run_http_server(server_class=HTTPServer, handler_class=S, port=8888):
 
 print(mk.users_show("9grxrmn5np")['avatarUrl'])
 mk.notes_create(text="@null これはテストです",visibility="specified",visible_user_ids=["9grxrmn5np"])
+t = threading.Thread(target=run_http_server)
+t.start()
 asyncio.run(getTL(token))
