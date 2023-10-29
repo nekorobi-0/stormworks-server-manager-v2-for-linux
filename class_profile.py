@@ -12,7 +12,11 @@ class profile():
         self.profile_id = profile_id
     def __init__(self,profile_id:int)->None:
         self.setting = xmltodict.parse(f"data/profiles/{profile_id}.xml")
+        with open("data/profiles/profiles_data.json","r")as f:
+            data = json.load(f)
+        self.permission = data
         self.profile_id = profile_id
+        
     def apply(self):
         string = xmltodict.unparse(self.setting, pretty=True)
         with open(f"data/profiles/{self.profile_id}.xml","w")as f:
