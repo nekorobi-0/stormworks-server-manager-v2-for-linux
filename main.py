@@ -14,7 +14,7 @@ maintainancing = False
 pages_txt= {}
 #load all users
 users = []
-id = []
+sessions = []
 files = [os.path.basename(p) for p in glob.glob('data/users/**', recursive=True)
        if os.path.isfile(p)]
 for file in files:
@@ -22,12 +22,17 @@ for file in files:
 print("ended user importing")
 #/load alll users
 #load all pages
-files = [os.path.basename(p) for p in glob.glob('websv/**', recursive=True)
-       if os.path.isfile(p)]
+files = glob.glob('websv/**', recursive=True)
 for page in files:
-    with open(f"websv/{page}",mode="r",encoding="utf-8") as f:
-        txt = f.read()
-    pages_txt[page] = txt
+    page = page.replace("websv\\","")
+    page_path = page.replace("\\","/")
+    try:
+        if page_path != "":
+            with open(f"websv/{page_path}",mode="r",encoding="utf-8") as f:
+                txt = f.read()
+            pages_txt[page] = txt
+    except PermissionError:
+        pass
 print("ended webserver importing")
 #/load all pages
 #load all profiles
@@ -75,11 +80,13 @@ class S(BaseHTTPRequestHandler):
         req = self.requestline[5:].split()[0]
         if req[:9] == "api/auth/":
             try:
-                id.append(int(req[9:]))
+                id = int(req[9:])
+                if id in sessions:#いい感じ
+                    pass
             except ValueError:
                 pass
             self.redirect("menu.html")
-            svt= pages_txt["success.html"]
+            svt= pages_txt[req]
         elif req =="logon.html":
             svt = pages_txt[""]
         elif req in pages_txt:
@@ -98,7 +105,7 @@ class S(BaseHTTPRequestHandler):
                 session.miauth(self,users)
                 print(users)
             elif req[5:] == "login_with_misskey":
-                session.misskeylogin(self,users,mk,id)
+                session.misskeylogin(self,users,mk,sessions)
 
 
 def run_http_server(server_class=HTTPServer, handler_class=S, port=8888):

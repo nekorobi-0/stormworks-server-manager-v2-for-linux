@@ -19,6 +19,10 @@ class session:
         else:
             del self
             return False
+    def authed(self,web):
+        data = user.cookiedata()
+        web._set_headers()
+        web.wfile.write(data.encode())
 class miatuth_session:
     def __init__(self) -> None:
         self.mia = MiAuth(
@@ -46,7 +50,7 @@ def miauthcheck(users,mia):
         except misskey.exceptions.MisskeyMiAuthFailedException:
             pass
         time.sleep(0.5)
-def misskeylogin(self,users,mk,id):
+def misskeylogin(self,users,mk,sessions):
     content_len = int(self.headers.get('Content-Length'))
     output = str(self.rfile.read(content_len).decode('utf-8'))
     username = output.replace("https://stormskey.works/@","")
@@ -58,6 +62,7 @@ def misskeylogin(self,users,mk,id):
         self.wfile.write("".encode())
         return
     session_now = session(user)
+    sessions[session_now.id] = session_now
     url = f"http://{settings.server_addres}/api/auth/{session_now.id}"
     mk.notes_create(text=f"""@{user.name}
         ログインがありました
@@ -66,10 +71,12 @@ def misskeylogin(self,users,mk,id):
         {url}"""
         ,visibility="specified",visible_user_ids=[user.id,]
     )
-    r = settings.sessiontime*10
+    self._set_headers()
+    self.wfile.write("".encode())
+    """r = settings.sessiontime*10
     for i in range(r):
         if session_now.id in id:
             data = user.cookiedata()
             self._set_headers()
             self.wfile.write(data.encode())
-        time.sleep(0.1)
+        time.sleep(0.1)"""
