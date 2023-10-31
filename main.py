@@ -10,11 +10,12 @@ import class_profile as profile
 import class_server as server
 import class_user as user
 import threading
+import settings
 maintainancing = False
 pages_txt= {}
 #load all users
 users = []
-sessions = []
+sessions = {}
 files = [os.path.basename(p) for p in glob.glob('data/users/**', recursive=True)
        if os.path.isfile(p)]
 for file in files:
@@ -24,11 +25,11 @@ print("ended user importing")
 #load all pages
 files = glob.glob('websv/**', recursive=True)
 for page in files:
-    page = page.replace("websv\\","")
-    page_path = page.replace("\\","/")
+    page = page.replace("\\","/")
+    page = page.replace('websv/',"")
     try:
-        if page_path != "":
-            with open(f"websv/{page_path}",mode="r",encoding="utf-8") as f:
+        if page != "":
+            with open(f"websv/{page}",mode="r",encoding="utf-8") as f:
                 txt = f.read()
             pages_txt[page] = txt
     except PermissionError:
@@ -79,14 +80,7 @@ class S(BaseHTTPRequestHandler):
     def do_GET(self):
         req = self.requestline[5:].split()[0]
         if req[:9] == "api/auth/":
-            try:
-                id = int(req[9:])
-                if id in sessions:#いい感じ
-                    pass
-            except ValueError:
-                pass
-            self.redirect("menu.html")
-            svt= pages_txt[req]
+            svt = pages_txt["api/auth/success.html"]
         elif req =="logon.html":
             svt = pages_txt[""]
         elif req in pages_txt:
@@ -98,7 +92,6 @@ class S(BaseHTTPRequestHandler):
     def do_POST(self):
         global id
         req = self.requestline[5:].split()[0]
-        print(self.requestline)
         if req[1:4] == "api":
             print(req[5:])
             if req[5:]=="logon_url":
@@ -106,6 +99,18 @@ class S(BaseHTTPRequestHandler):
                 print(users)
             elif req[5:] == "login_with_misskey":
                 session.misskeylogin(self,users,mk,sessions)
+            elif req[5:10] == "auth/":
+                try:
+                    id = int(req[10:])
+                    print(id)
+                    if id in sessions:#いい感じ
+                        print("login ok")
+                        sessions[id].auth(self)
+                    else:
+                        self._set_headers()
+                        self.wfile.write("failed".encode())
+                except ValueError:
+                    pass
 
 
 def run_http_server(server_class=HTTPServer, handler_class=S, port=8888):

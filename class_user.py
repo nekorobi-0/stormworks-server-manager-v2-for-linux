@@ -42,7 +42,7 @@ class user:
             "profiles":self.profiles
         }
         with open(f"data/users/{self.id}.json", mode="wt", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
+            json.dumps(data, f, ensure_ascii=False, indent=4)
     def cookiedata(self):
         data = {
             "username":self.name,
@@ -51,7 +51,7 @@ class user:
             "avatarurl":self.avatarurl,
             "profilelimit":self.profilelimit
         }
-        return json.dump(data,ensure_ascii=False, indent=4)
+        return json.dumps(data,ensure_ascii=False, indent=4)
 def randomname(n):
    randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
    return ''.join(randlst)

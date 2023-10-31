@@ -1,11 +1,16 @@
-xhr.open('POST', `${location.origin}/api/login_with_misskey`);
+var xhr = new XMLHttpRequest()
+xhr.open('POST', `${location.href}`);
 xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-xhr.send(misskeyurl);
+xhr.send("rocamisaki is a human");
 xhr.onreadystatechange = function(){
     if ((xhr.readyState == 4) && (xhr.status == 200)) {
-        _return = JSON.parse(xhr.responseText);
-        for (let key in _return){
-            document.cookie = key +'=' + _return[key];
+        let res = xhr.responseText
+        if (res != "failed"){
+            _return = JSON.parse(res);
+            for (let key in _return){
+                document.cookie = `${key}=${_return[key]};path=/;`
+            };
+            window.location.href = `${location.origin}/menu.html`
         };
     };
 };

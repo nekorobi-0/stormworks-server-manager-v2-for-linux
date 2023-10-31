@@ -19,8 +19,8 @@ class session:
         else:
             del self
             return False
-    def authed(self,web):
-        data = user.cookiedata()
+    def auth(self,web):
+        data = self.user.cookiedata()
         web._set_headers()
         web.wfile.write(data.encode())
 class miatuth_session:
@@ -73,10 +73,3 @@ def misskeylogin(self,users,mk,sessions):
     )
     self._set_headers()
     self.wfile.write("".encode())
-    """r = settings.sessiontime*10
-    for i in range(r):
-        if session_now.id in id:
-            data = user.cookiedata()
-            self._set_headers()
-            self.wfile.write(data.encode())
-        time.sleep(0.1)"""
