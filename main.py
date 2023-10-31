@@ -38,12 +38,10 @@ for page in files:
 print("ended webserver importing")
 #/load all pages
 #load all profiles
-users = {}
-sessions = {}
 files = [os.path.basename(p) for p in glob.glob('data/profiles/**', recursive=True)
        if os.path.isfile(p)]
 for file in files:
-    id = file[:-4]
+    id = int(file[:-4])
     profiles[id] = profile.profile(id)
 print("ended profile importing")
 #/load all profiles
@@ -111,10 +109,9 @@ class S(BaseHTTPRequestHandler):
             elif req[5:10] == "auth/":
                 try:
                     id = int(req[10:])
-                    print(id)
                     if id in sessions:#いい感じ
-                        print("login ok")
                         sessions[id].auth(self)
+                        sessions.pop(id)
                     else:
                         self._set_headers()
                         self.wfile.write("failed".encode())
@@ -124,14 +121,38 @@ class S(BaseHTTPRequestHandler):
                 content_len = int(self.headers.get('Content-Length'))
                 output = str(self.rfile.read(content_len).decode('utf-8'))
                 data = json.loads(output)
+                print(data)
                 user = users[data["id"]]
-                profs = user.profiles
-                data = {}
-                for pro in profs:
-                    data[profiles[pro["id"]]] = data[profiles[pro["name"]]]
-                txt = json.dumps(data,ensure_ascii=False, indent=4)
-                self._set_headers()
-                self.wfile.write(txt.encode())
+                if user.seacret == data["seacret"]:
+                    profs = user.profiles
+                    data_s = {}
+                    for pro in profs:
+                        data_s[pro["id"]] = pro["name"]
+                        print(data_s)
+                    txt = json.dumps(data_s,ensure_ascii=False, indent=4)
+                    self._set_headers()
+                    self.wfile.write(txt.encode())
+                else:
+                    self._set_headers()
+                    self.wfile.write("failed".encode())
+            elif req[5:] == "oparation":#プロファイルの起動,編集,削除
+                content_len = int(self.headers.get('Content-Length'))
+                output = str(self.rfile.read(content_len).decode('utf-8'))
+                data = json.loads(output)
+                print(data)
+                user = users[data["id"]]
+                if user.seacret == data["seacret"]:
+                    profs = user.profiles
+                    data_s = {}
+                    for pro in profs:
+                        data_s[pro["id"]] = pro["name"]
+                        print(data_s)
+                    txt = json.dumps(data_s,ensure_ascii=False, indent=4)
+                    self._set_headers()
+                    self.wfile.write(txt.encode())
+                else:
+                    self._set_headers()
+                    self.wfile.write("failed".encode())
 
 
 def run_http_server(server_class=HTTPServer, handler_class=S, port=8888):
@@ -142,7 +163,8 @@ def run_http_server(server_class=HTTPServer, handler_class=S, port=8888):
 	print('HTTP server started....')
 	httpd.serve_forever()
 
-t = threading.Thread(target=run_http_server)
+"""t = threading.Thread(target=run_http_server)
 t.start()
-asyncio.run(getTL(token))
+asyncio.run(getTL(token))"""
+run_http_server()
 print("fin")
