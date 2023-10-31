@@ -42,7 +42,7 @@ class user:
             "profiles":self.profiles
         }
         with open(f"data/users/{self.id}.json", mode="wt", encoding="utf-8") as f:
-            json.dumps(data, f, ensure_ascii=False, indent=4)
+            json.dump(data, f, ensure_ascii=False, indent=4)
     def cookiedata(self):
         data = {
             "username":self.name,

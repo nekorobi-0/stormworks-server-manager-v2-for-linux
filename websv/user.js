@@ -1,30 +1,31 @@
-function login() {
-    var getCookie = (function(){
-        return function() {
-         var result = [];
-         var cookies = document.cookie;
-       
-         if(cookies != ''){
-          var cookieArray = cookies.split(';');
-          for(var i = 0; i < cookieArray.length; i++){
-           var cookie = cookieArray[i].split('=');
-           result[cookie[0]] = decodeURIComponent(cookie[1]);
-          }
-         }
-         return result;
+
+var getCookie = (function(){
+    return function() {
+    var result = [];
+    var cookies = document.cookie;
+    if(cookies != ''){
+        var cookieArray = cookies.split(';');
+        for(var i = 0; i < cookieArray.length; i++){
+            var cookie = cookieArray[i].split('=');
+            result[cookie[0]] = decodeURIComponent(cookie[1]);
         };
-       })();
-    if ("id" in getCookie){//クッキーに情報がある場合
-        window.location.href('menu.html')//ユーザーページにリダイレクト
-    } else{//クッキーに情報がない場合の処理
-        var xhr = new XMLHttpRequest();
-        let input = document.getElementById('misskeyurl');
-        let misskeyurl = input.value;
-        console.log(misskeyurl);
-        xhr.open('POST', `${location.origin}/api/login_with_misskey`);
-        xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-        xhr.send(misskeyurl);
     };
+    return result;
+    };
+})();
+if (" id" in getCookie()){//クッキーに情報がある場合
+    window.location.href = 'menu.html'//ユーザーページにリダイレクト
+};
+function login() {
+    //クッキーに情報がない場合の処理
+    var xhr = new XMLHttpRequest();
+    let input = document.getElementById('misskeyurl');
+    let misskeyurl = input.value;
+    console.log(misskeyurl);
+    xhr.open('POST', `${location.origin}/api/login_with_misskey`);
+    xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+    xhr.send(misskeyurl);
+    document.getElementById('show').innerHTML = 'みすきーに認証urlを送信しました'
 };
 function logon() {//サーバーにみすきーの認証をリクエスト
     var xhr = new XMLHttpRequest();
@@ -37,14 +38,5 @@ function logon() {//サーバーにみすきーの認証をリクエスト
             url = xhr.responseText;
             open(url);
         };
-    };
-};
-function logout(){//クッキー全削除
-    const cookies = document.cookie.split(';')
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i]
-        const eqPos = cookie.indexOf('=')
-        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie
-        document.cookie = name + '=;max-age=0'
     };
 };

@@ -11,6 +11,8 @@ xhr.onreadystatechange = function(){
                 document.cookie = `${key}=${_return[key]};path=/;`
             };
             window.location.href = `${location.origin}/menu.html`
+        }else{
+            window.location.href = `${location.origin}/index.html`
         };
     };
 };
