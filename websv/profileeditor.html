@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" class="h-100">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>stormworks server manager</title>
+    <link href="sidebars.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  </head>
+  <body class ="h-100">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<div class="row h-100 w-100 g-0">
+<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark h-100 col-0" style="width: 280px;">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+    <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+    <span class="fs-4">名称募集中</span>
+  </a>
+  <hr>
+  <ul class="nav nav-pills flex-column mb-auto h-100 ">
+    <li class="nav-item">
+      <a href="menu.html" class="nav-link text-white" aria-current="page">
+        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+        Home
+      </a>
+    </li>
+    <li>
+      <a href="dashboard.html" class="nav-link active">
+        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#"></use></svg>
+        Dashboard
+      </a>
+    </li>
+    <li>
+      <a href="#" class="nav-link text-white">
+        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+        Orders
+      </a>
+    </li>
+    <li>
+      <a href="#" class="nav-link text-white">
+        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+        Products
+      </a>
+    </li>
+    <li>
+      <a href="#" class="nav-link text-white">
+        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+        Customers
+      </a>
+    </li>
+  </ul>
+  <hr>
+  <div class="dropdown">
+    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="icon">
+      <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+      <strong>mdo</strong>
+    </a>
+    <script src="show.js"></script>
+    <script src="logout.js"></script>
+    <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+      <li><a class="dropdown-item" href="#">Settings</a></li>
+      <li><a class="dropdown-item" href="#">Profile</a></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="javascript:void(0);"  onclick=logout()>Sign out</a></li>
+    </ul>
+  </div>
+</div>
+    <div class="col-auto container">
+        <form>
+            <div class="mb-3">
+                <label for="name" class="form-label">name</label>
+                <input type="text" class="form-control" id="name">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">password</label>
+                <input type="text" class="form-control" id="password">
+            </div>
+            <div class="mb-3">
+                <label for="base_island" class="form-label">base_island</label>
+                <input type="text" class="form-control" id="base_island" value="data/tiles/island12.xml">
+            </div>
+            <div class="mb-3">
+                <label for="seed" class="form-label">seed</label>
+                <input type="number" class="form-control" id="seed" value="0">
+            </div>
+            <div class="mb-3">
+                <label for="max_players" class="form-label">max_players</label>
+                <input type="number" class="form-control" id="max_players" value="32">
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="dlc_arid">
+                <label class="btn-toggle" for="exampleCheck1">dlc_arid</label>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="dlc_weapons">
+                <label class="btn-toggle" for="exampleCheck1">dlc_weapons</label>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="dlc_space">
+                <label class="btn-toggle" for="exampleCheck1">dlc_space</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+    <div class="vr col-auto"></div>
+    <div class="col-auto container">
+        <h2>
+            Admins
+        </h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">steamID</th>
+                    <th scope="col">Operation</th>
+                </tr>
+            </thead>
+            <tbody id="table">
+                <tr>
+                    <th scope="row">76561198314346076</th>
+                    <td>
+                        <button type="button" class="btn btn-danger">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>

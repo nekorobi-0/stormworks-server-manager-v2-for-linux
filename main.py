@@ -14,12 +14,13 @@ import settings
 maintainancing = False
 pages_txt= {}
 #load all users
-users = []
+users = {}
 sessions = {}
+profiles = {}
 files = [os.path.basename(p) for p in glob.glob('data/users/**', recursive=True)
        if os.path.isfile(p)]
 for file in files:
-    users.append(user.user(f"data/users/{file}","json"))
+    users[file[:-5]] = user.user(f"data/users/{file}","json")
 print("ended user importing")
 #/load alll users
 #load all pages
@@ -37,6 +38,14 @@ for page in files:
 print("ended webserver importing")
 #/load all pages
 #load all profiles
+users = {}
+sessions = {}
+files = [os.path.basename(p) for p in glob.glob('data/profiles/**', recursive=True)
+       if os.path.isfile(p)]
+for file in files:
+    id = file[:-4]
+    profiles[id] = profile.profile(id)
+print("ended profile importing")
 #/load all profiles
 
 with open("config.json","r")as f:
@@ -111,6 +120,18 @@ class S(BaseHTTPRequestHandler):
                         self.wfile.write("failed".encode())
                 except ValueError:
                     pass
+            elif req[5:] == "get_profiles":
+                content_len = int(self.headers.get('Content-Length'))
+                output = str(self.rfile.read(content_len).decode('utf-8'))
+                data = json.loads(output)
+                user = users[data["id"]]
+                profs = user.profiles
+                data = {}
+                for pro in profs:
+                    data[profiles[pro["id"]]] = data[profiles[pro["name"]]]
+                txt = json.dumps(data,ensure_ascii=False, indent=4)
+                self._set_headers()
+                self.wfile.write(txt.encode())
 
 
 def run_http_server(server_class=HTTPServer, handler_class=S, port=8888):

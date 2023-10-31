@@ -45,7 +45,8 @@ def miauth(self,users):
 def miauthcheck(users,mia):
     for i in range(60):
         try:
-            users.append(user.user(mia.mia.check(),"new"))
+            new_user = user.user(mia.mia.check(),"new")
+            users[new_user.id] = new_user
             break
         except misskey.exceptions.MisskeyMiAuthFailedException:
             pass
@@ -54,7 +55,7 @@ def misskeylogin(self,users,mk,sessions):
     content_len = int(self.headers.get('Content-Length'))
     output = str(self.rfile.read(content_len).decode('utf-8'))
     username = output.replace("https://stormskey.works/@","")
-    for user in users:
+    for user in users.values():
         if user.name == username:
             break
     else:
