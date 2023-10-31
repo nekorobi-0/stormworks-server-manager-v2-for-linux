@@ -14,7 +14,7 @@ var getCookie = (function(){
     };
 })();
 if (" id" in getCookie()){//クッキーに情報がある場合
-    window.location.href = 'menu.html'//ユーザーページにリダイレクト
+    window.location.href = 'menu.html';//ユーザーページにリダイレクト
 };
 function login() {
     //クッキーに情報がない場合の処理
