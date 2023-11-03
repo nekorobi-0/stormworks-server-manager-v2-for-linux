@@ -14,6 +14,7 @@ class user:
             self.get_data()
             self.profilelimit = data["profilelimit"]
             self.seacret = data["seacret"]
+            self.serverlim = data["serverlim"]
         elif mode == "new":
             misskey_token = FileOrToken
             self.token = misskey_token
@@ -23,6 +24,8 @@ class user:
             self.seacret = randomname(100)
             self.export_file()
             print("ok")
+            self.serverlim = 1
+        self.runningservers = {}
     def get_data(self):
         mk = Misskey("stormskey.works",i=self.token)
         self.mk = mk.i()
@@ -49,7 +52,8 @@ class user:
             "id":self.id,
             "seacret":self.seacret,
             "avatarurl":self.avatarurl,
-            "profilelimit":self.profilelimit
+            "profilelimit":self.profilelimit,
+            "serverlim":self.serverlim
         }
         return json.dumps(data,ensure_ascii=False, indent=4)
 def randomname(n):

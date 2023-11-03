@@ -17,6 +17,7 @@ pages_txt= {}
 users = {}
 sessions = {}
 profiles = {}
+servers = {}
 files = [os.path.basename(p) for p in glob.glob('data/users/**', recursive=True)
        if os.path.isfile(p)]
 for file in files:
@@ -117,18 +118,35 @@ class S(BaseHTTPRequestHandler):
                         self.wfile.write("failed".encode())
                 except ValueError:
                     pass
-            elif req[5:] == "get_profiles":
+            elif req[5:] == "get_profiles":#プロファイル一覧の取得
                 content_len = int(self.headers.get('Content-Length'))
                 output = str(self.rfile.read(content_len).decode('utf-8'))
                 data = json.loads(output)
                 print(data)
                 user = users[data["id"]]
-                if user.seacret == data["seacret"]:
+                if user.seacret == data["seacret"]:#照合
                     profs = user.profiles
                     data_s = {}
                     for pro in profs:
                         data_s[pro["id"]] = pro["name"]
                         print(data_s)
+                    txt = json.dumps(data_s,ensure_ascii=False, indent=4)
+                    self._set_headers()
+                    self.wfile.write(txt.encode())
+                else:
+                    self._set_headers()
+                    self.wfile.write("failed".encode())
+            elif req[5:] == "runningserver":
+                content_len = int(self.headers.get('Content-Length'))
+                output = str(self.rfile.read(content_len).decode('utf-8'))
+                data = json.loads(output)
+                print(data)
+                user = users[data["id"]]
+                if user.seacret == data["seacret"]:#照合
+                    svs = user.runningservers
+                    data_s = {}
+                    for sv in svs:
+                        data_s[sv["id"]] = sv["name"]
                     txt = json.dumps(data_s,ensure_ascii=False, indent=4)
                     self._set_headers()
                     self.wfile.write(txt.encode())
@@ -142,12 +160,20 @@ class S(BaseHTTPRequestHandler):
                 print(data)
                 user = users[data["id"]]
                 if user.seacret == data["seacret"]:
-                    profs = user.profiles
-                    data_s = {}
-                    for pro in profs:
-                        data_s[pro["id"]] = pro["name"]
-                        print(data_s)
-                    txt = json.dumps(data_s,ensure_ascii=False, indent=4)
+                    pro = profiles[data["id"]]
+                    #if data["mode"] == "edit":
+                        #self.redirect()
+                    if data["mode"] == "run":
+                        if (len(servers) <= settings.server_count and 
+                            len(user.runnningservers) <= user.serverlim):
+                            s = server.server(pro,user)
+                            servers[s.dir] = s
+                            
+
+                    elif data["mode"] == "delete":
+                        user.profiles.pop(data["id"])
+                        user.export_file()
+                        del pro
                     self._set_headers()
                     self.wfile.write(txt.encode())
                 else:

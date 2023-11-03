@@ -1,6 +1,7 @@
 import json
 import xmltodict
 import xml.etree.ElementTree as ET
+import os
 class profile():
     def __init__(self,profile_id:int) -> None:
         if profile_id == -1:#新規生成
@@ -21,8 +22,11 @@ class profile():
                 data = json.load(f)
             self.permission = data
             self.profile_id = profile_id
+
         
     def apply(self):
         string = xmltodict.unparse(self.setting, pretty=True)
         with open(f"data/profiles/{self.profile_id}.xml","w")as f:
             f.write(string)
+    def __del__(self):
+        os.remove(f"data/profiles/{self.profile_id}.xml")
