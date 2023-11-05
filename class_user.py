@@ -25,7 +25,7 @@ class user:
             self.export_file()
             print("ok")
             self.serverlim = 1
-        self.runningservers = {}
+        self.runningservers = []
     def get_data(self):
         mk = Misskey("stormskey.works",i=self.token)
         self.mk = mk.i()

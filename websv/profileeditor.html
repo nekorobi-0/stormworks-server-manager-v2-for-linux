@@ -110,19 +110,27 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">steamID</th>
-                    <th scope="col">Operation</th>
+                  <th scope="col">steamID</th>
+                  <th scope="col">Operation</th>
                 </tr>
             </thead>
             <tbody id="table">
                 <tr>
                     <th scope="row">76561198314346076</th>
                     <td>
-                        <button type="button" class="btn btn-danger">Delete</button>
+                      <button type="button" class="btn btn-danger">Delete</button>
                     </td>
                 </tr>
             </tbody>
         </table>
+        <form>
+          <div class="mb-3">
+            <label for="Adminid" class="form-label">Add Admin</label>
+            <input type="email" class="form-control" id="Adminid" aria-describedby="Adminid_d">
+            <div id="Adminid_d" class="form-text">Adminに追加したい人のsteamIDを入力してください</div>
+          </div>
+        </form>
+        <button class="btn btn-primary" onclick=addadmin()>Submit</button>
     </div>
 </div>
 </body>

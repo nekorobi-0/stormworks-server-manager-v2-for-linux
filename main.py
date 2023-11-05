@@ -136,17 +136,26 @@ class S(BaseHTTPRequestHandler):
                 else:
                     self._set_headers()
                     self.wfile.write("failed".encode())
+            elif req[:5] == "get_profile":
+                if (user.seacret == data["seacret"] and
+                    data["proid"] in user.runningserveres):#照合:
+                    svs = user.runningservers
+                    data_s = {}
+                    for set in settings.available_settings:
+                        data_s[set] = profiles[data["proid"]].settings["server_data"][f"@{set}"]
+                    txt = json.dumps(data_s,ensure_ascii=False, indent=4)
+                    self._set_headers()
+                    self.wfile.write(txt.encode())
             elif req[5:] == "runningserver":
                 content_len = int(self.headers.get('Content-Length'))
                 output = str(self.rfile.read(content_len).decode('utf-8'))
                 data = json.loads(output)
-                print(data)
                 user = users[data["id"]]
                 if user.seacret == data["seacret"]:#照合
                     svs = user.runningservers
                     data_s = {}
                     for sv in svs:
-                        data_s[sv["id"]] = sv["name"]
+                        data_s[sv] = "rocami"
                     txt = json.dumps(data_s,ensure_ascii=False, indent=4)
                     self._set_headers()
                     self.wfile.write(txt.encode())
@@ -159,26 +168,50 @@ class S(BaseHTTPRequestHandler):
                 data = json.loads(output)
                 print(data)
                 user = users[data["id"]]
-                if user.seacret == data["seacret"]:
-                    pro = profiles[data["id"]]
-                    #if data["mode"] == "edit":
-                        #self.redirect()
-                    if data["mode"] == "run":
-                        if (len(servers) <= settings.server_count and 
-                            len(user.runnningservers) <= user.serverlim):
-                            s = server.server(pro,user)
-                            servers[s.dir] = s
-                            
-
-                    elif data["mode"] == "delete":
-                        user.profiles.pop(data["id"])
-                        user.export_file()
-                        del pro
+                print(data["id"])
+                print(user.profiles)
+                print(servers)
+                pro = profiles[data["proid"]]
+                print(user.runningservers)
+                if (user.seacret == data["seacret"] and
+                    data["proid"] in user.runningservers):
+                    sv = servers[data["proid"]]
+                    if data["mode"] == "stop":
+                        sv.stop()
+                        user.runningservers.pop(data["proid"])
+                        servers.pop(data["proid"])
+                        del sv
                     self._set_headers()
                     self.wfile.write(txt.encode())
+                elif (user.seacret == data["seacret"] and
+                    data["proid"] in [d.get('id') for d in user.profiles]):
+                    if data["mode"] == "save":
+                        self.redirect()
+                    elif data["mode"] == "run":
+                        if (len(servers) < settings.server_count and 
+                            len(user.runningservers) < user.serverlim):
+                            s = server.server(pro,user)
+                            servers[data["proid"]] = s
+                            user.runningservers.append(data["proid"])
+                    elif data["mode"] == "delete":
+                        user.profiles.pop(data["proid"])
+                        user.export_file()
+                        del pro
+                    elif data["mode"] == "addadmin":
+                        admins = pro.setting["server_data"]["admins"]
+                        if admins == None:
+                            admins = [{"@value":data["add_id"]}]
+                        elif type(admins) == dict:
+                            admins = [admins,{"@value":data["add_id"]}]
+                        else:
+                            admins.append({"@value":data["add_id"]})
+                    elif data["mode"] == "save":
+                        pass
+                    self._set_headers()
                 else:
                     self._set_headers()
                     self.wfile.write("failed".encode())
+                    
 
 
 def run_http_server(server_class=HTTPServer, handler_class=S, port=8888):

@@ -5,18 +5,21 @@ class server:
         self.RunningProfile = False
         self.timelimit = None
         self.dir = ServerAllocator.Allocator()
-        self.HavePermissionUser = None
+        self.HavePermissionUser = []
         self.HavePermissionUser.append(user)
         with open(profile.path,"r") as f:
-            prof = f.read
-        prof.replase('port="port"',f'port="{25570+self.dir*2}"')
-        with open(f"{self.dir}/settings.xml","w")as f:
+            prof = f.read()
+        prof.replace('port="port"',f'port="{25570+self.dir*2}"')
+        with open(f"stw/sv{self.dir}/settings.xml","w")as f:
             f.write(prof)
         self.RunningProfile = profile
-        self.server = subprocess.Popen(f"exec wine server64.exe +server_dir ~/server/stw/{self.dir}")
+        #self.server = subprocess.Popen(f"exec wine stw/server64.exe +server_dir ~/server/stw/sv{str(self.dir)}")
+        self.server = subprocess.Popen(f"py sv.py")
+        print("success")
     def stop(self):
         if self.server != None:
             self.server.kill()
+            ServerAllocator.servers.pop[self.dir] = False
     def check_status(self):
         if self.server != None:
             if self.server.call() != None:
@@ -24,5 +27,5 @@ class server:
         del self
         return False
     def __del__(self):
-        with open(f"{self.dir}/settings.xml","w")as f:
+        with open(f"stw/sv{self.dir}/settings.xml","w")as f:
             f.write("")

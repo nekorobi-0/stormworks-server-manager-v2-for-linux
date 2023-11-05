@@ -1,4 +1,3 @@
-for i in range(1000):
-    if i > 100:
-        break
-print(i)
+a = None
+a.append("test")
+print(a)

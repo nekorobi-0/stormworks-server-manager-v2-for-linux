@@ -18,10 +18,8 @@ class profile():
             xml_data = tree.getroot()
             xmlstr = ET.tostring(xml_data, encoding='utf-8', method='xml')
             self.setting = dict(xmltodict.parse(xmlstr))
-            with open("data/profiles_data.json","r")as f:
-                data = json.load(f)
-            self.permission = data
             self.profile_id = profile_id
+        self.path = f"data/profiles/{self.profile_id}.xml"
 
         
     def apply(self):
