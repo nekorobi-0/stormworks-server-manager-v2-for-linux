@@ -1,3 +1,3 @@
-a = None
-a.append("test")
-print(a)
+a = [1]
+b =1
+print(b in a)

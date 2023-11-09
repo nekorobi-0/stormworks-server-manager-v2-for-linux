@@ -80,20 +80,24 @@ xhr2.onreadystatechange = function(){
     };
 };
 function reqest(mode,id){
-    console.log(mode)
-    var xhr = new XMLHttpRequest()
-    xhr.open('POST', `${location.origin}/api/oparation`);
-    xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-    var cookie = getCookie();
-    var obj = {
-        "id":cookie["id"],
-        "seacret":cookie["seacret"],
-        "mode":mode,
-        "proid":id
+    if (mode == "edit"){
+        OpenEditor(id)
+    }else{
+        console.log(mode)
+        var xhr = new XMLHttpRequest()
+        xhr.open('POST', `${location.origin}/api/oparation`);
+        xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+        var cookie = getCookie();
+        var obj = {
+            "id":cookie["id"],
+            "seacret":cookie["seacret"],
+            "mode":mode,
+            "proid":id
+        }
+        xhr.send(JSON.stringify(obj));
+        xhr.onreadystatechange = function(){
+        };
     }
-    xhr.send(JSON.stringify(obj));
-    xhr.onreadystatechange = function(){
-    };
 };
 function OpenEditor(id){
     document.cookie = `editor=${id};path=/;`;

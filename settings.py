@@ -10,6 +10,6 @@ available_settings = [
     "seed",
     "max_players",
     "dlc_arid",
-    "dlc_wepons",
+    "dlc_weapons",
     "dlc_space"
 ]

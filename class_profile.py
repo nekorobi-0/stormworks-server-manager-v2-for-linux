@@ -26,5 +26,5 @@ class profile():
         string = xmltodict.unparse(self.setting, pretty=True)
         with open(f"data/profiles/{self.profile_id}.xml","w")as f:
             f.write(string)
-    def __del__(self):
+    def delete(self):
         os.remove(f"data/profiles/{self.profile_id}.xml")

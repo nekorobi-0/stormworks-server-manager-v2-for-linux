@@ -27,7 +27,6 @@ function get_profile(){
     var obj = {
         "id":cookie["id"],
         "seacret":cookie["seacret"],
-        "mode":"addadmin",
         "proid":cookie["editor"]
     }
     xhr.send(JSON.stringify(obj));
@@ -46,6 +45,55 @@ function get_profile(){
         };
     };
 };
+function get_admin(){
+    var xhr = new XMLHttpRequest()
+    xhr.open('POST', `${location.origin}/api/get_admin`);
+    xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+    var cookie = getCookie();
+    var obj = {
+        "id":cookie["id"],
+        "seacret":cookie["seacret"],
+        "proid":cookie["editor"]
+    }
+    xhr.send(JSON.stringify(obj));
+    xhr.onreadystatechange = function(){
+        if ((xhr.readyState == 4) && (xhr.status == 200)) {
+            let res = xhr.responseText
+            if (res != "failed"){
+                _return = JSON.parse(res);
+                let doc = document.getElementById("table");
+                let htmltxt = ""
+                for (let key in _return){
+                    htmltxt += `
+                        <tr>
+                            <th scope="row">${key}</th>
+                            <td>
+                                <button type="button" class="btn btn-danger onclick=deladmin(${key})">Delete</button>
+                            </td>
+                        </tr>`
+                };
+                doc.innerHTML = htmltxt
+            }else{
+                window.location.href = `${location.origin}/index.html`
+            };
+        };
+    };
+};
+function deladmin(id){
+    console.log(mode)
+    var xhr = new XMLHttpRequest()
+    xhr.open('POST', `${location.origin}/api/oparation`);
+    xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+    var cookie = getCookie();
+    var obj = {
+        "id":cookie["id"],
+        "seacret":cookie["seacret"],
+        "mode":"deladmin",
+        "proid":cookie["editor"],
+        "id2del":id
+    }
+    xhr.send(JSON.stringify(obj));
+};
 function addadmin(){
     let add_id = document.getElementById('Adminid');
     var xhr = new XMLHttpRequest()
@@ -56,8 +104,8 @@ function addadmin(){
         "id":cookie["id"],
         "seacret":cookie["seacret"],
         "mode":"addadmin",
-        "proid":cookie["editor"],
-        "add_id":add_id
+        "proid":Number(cookie["editor"]),
+        "add_id":add_id.value
     }
     xhr.send(JSON.stringify(obj));
 };
@@ -71,10 +119,24 @@ function save(){
     var obj = {
         "id":cookie["id"],
         "seacret":cookie["seacret"],
-        "mode":"addadmin",
+        "mode":"save",
         "proid":cookie["editor"],
-        "add_id":add_id
-    }
+        "add_id":add_id,
+        "datas":{
+            "name":getdata("name"),
+            "password":getdata("password"),
+            "base_island":getdata("base_island"),
+            "seed":getdata("seed"),
+            "max_players":getdata("max_players"),
+            "dlc_arid":getdata("dlc_arid"),
+            "dlc_weapons":getdata("dlc_weapons"),
+            "dlc_space":getdata("dlc_space")
+        }
+    };
     xhr.send(JSON.stringify(obj));
+};
+function getdata(id){
+    let add_id = document.getElementById(id).value;
+    return add_id;
 };
 get_profile()

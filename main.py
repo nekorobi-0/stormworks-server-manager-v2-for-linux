@@ -11,6 +11,8 @@ import class_server as server
 import class_user as user
 import threading
 import settings
+import sys
+sys.setrecursionlimit(2000)
 maintainancing = False
 pages_txt= {}
 #load all users
@@ -136,13 +138,32 @@ class S(BaseHTTPRequestHandler):
                 else:
                     self._set_headers()
                     self.wfile.write("failed".encode())
-            elif req[:5] == "get_profile":
+            elif req[5:] == "get_profile":
+                print("ok")
+                content_len = int(self.headers.get('Content-Length'))
+                output = str(self.rfile.read(content_len).decode('utf-8'))
+                data = json.loads(output)
+                user = users[data["id"]]
                 if (user.seacret == data["seacret"] and
-                    data["proid"] in user.runningserveres):#照合:
-                    svs = user.runningservers
+                    int(data["proid"]) in ([int(d.get('id')) for d in user.profiles])):#照合:
                     data_s = {}
                     for set in settings.available_settings:
-                        data_s[set] = profiles[data["proid"]].settings["server_data"][f"@{set}"]
+                        data_s[set] = profiles[int(data["proid"])].setting["server_data"][f"@{set}"]
+                    txt = json.dumps(data_s,ensure_ascii=False, indent=4)
+                    self._set_headers()
+                    self.wfile.write(txt.encode())
+            elif req[5:] == "get_admin":
+                content_len = int(self.headers.get('Content-Length'))
+                output = str(self.rfile.read(content_len).decode('utf-8'))
+                data = json.loads(output)
+                user = users[data["id"]]
+                if (user.seacret == data["seacret"] and
+                    int(data["proid"]) in ([int(d.get('id')) for d in user.profiles])):#照合:
+                    pro = profiles[int(data["proid"])]
+                    data_s = {}
+                    for set in pro.setting["server_data"]["admins"]["id"]:
+                        admins = pro.setting["server_data"]["admins"]["id"]
+                        data_s[int(set["@value"])] = "rocamisaki"
                     txt = json.dumps(data_s,ensure_ascii=False, indent=4)
                     self._set_headers()
                     self.wfile.write(txt.encode())
@@ -168,23 +189,22 @@ class S(BaseHTTPRequestHandler):
                 data = json.loads(output)
                 print(data)
                 user = users[data["id"]]
-                print(data["id"])
                 print(user.profiles)
-                print(servers)
-                pro = profiles[data["proid"]]
-                print(user.runningservers)
                 if (user.seacret == data["seacret"] and
                     data["proid"] in user.runningservers):
+                    print("sv")
                     sv = servers[data["proid"]]
                     if data["mode"] == "stop":
                         sv.stop()
-                        user.runningservers.pop(data["proid"])
+                        user.runningservers.remove(data["proid"])
                         servers.pop(data["proid"])
                         del sv
                     self._set_headers()
                     self.wfile.write(txt.encode())
                 elif (user.seacret == data["seacret"] and
-                    data["proid"] in [d.get('id') for d in user.profiles]):
+                    int(data["proid"]) in [d.get('id') for d in user.profiles]):
+                    print(data["mode"])
+                    pro = profiles[int(data["proid"])]
                     if data["mode"] == "save":
                         self.redirect()
                     elif data["mode"] == "run":
@@ -196,17 +216,29 @@ class S(BaseHTTPRequestHandler):
                     elif data["mode"] == "delete":
                         user.profiles.pop(data["proid"])
                         user.export_file()
+                        pro.delete()
                         del pro
                     elif data["mode"] == "addadmin":
-                        admins = pro.setting["server_data"]["admins"]
+                        admins = pro.setting["server_data"]["admins"]["id"]
                         if admins == None:
-                            admins = [{"@value":data["add_id"]}]
-                        elif type(admins) == dict:
-                            admins = [admins,{"@value":data["add_id"]}]
+                            n = {"id":[{"@value":data["add_id"]}]}
                         else:
-                            admins.append({"@value":data["add_id"]})
+                            n = {"id":(admins + [{"@value":data["add_id"]}])}
+                        pro.setting["server_data"]["admins"] = n
+                        pro.apply()
                     elif data["mode"] == "save":
+                        for i in data["data"]:
+                            if i in settings.available_settings:
+                                pro.setting["server_data"][f"@{i}"] = data["data"][i]
                         pass
+                    elif data["mode"] == "deladmin":
+                        admins = pro.setting["server_data"]["admins"]["id"]
+                        for admin in enumerate(admins):
+                            if admin[1]["@value"] == str(data["id2del"]):
+                                admins.pop(admins[admin[0]])
+                        n = {"id":admins}
+                        pro.setting["server_data"]["admins"] = n
+                        pro.apply()
                     self._set_headers()
                 else:
                     self._set_headers()

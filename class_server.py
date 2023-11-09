@@ -14,12 +14,12 @@ class server:
             f.write(prof)
         self.RunningProfile = profile
         #self.server = subprocess.Popen(f"exec wine stw/server64.exe +server_dir ~/server/stw/sv{str(self.dir)}")
-        self.server = subprocess.Popen(f"py sv.py")
+        self.server = subprocess.Popen(f"py sv.py",shell=True)
         print("success")
     def stop(self):
         if self.server != None:
             self.server.kill()
-            ServerAllocator.servers.pop[self.dir] = False
+            ServerAllocator.servers[self.dir] = False
     def check_status(self):
         if self.server != None:
             if self.server.call() != None:
