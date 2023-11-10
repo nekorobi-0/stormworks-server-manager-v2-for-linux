@@ -1,3 +1,2 @@
-a = [1]
-b =1
-print(b in a)
+obj = [{"a":1},{"a":2}]
+obj.pop(0)

@@ -38,6 +38,7 @@ function get_profile(){
                 for (let key in _return){
                     let doc = document.getElementById(key);
                     doc.value =  _return[key];
+                    doc.checked = _return[key]
                 };
             }else{
                 window.location.href = `${location.origin}/index.html`
@@ -68,7 +69,7 @@ function get_admin(){
                         <tr>
                             <th scope="row">${key}</th>
                             <td>
-                                <button type="button" class="btn btn-danger onclick=deladmin(${key})">Delete</button>
+                                <button type="button" class="btn btn-danger" onclick=deladmin(${key})>Delete</button>
                             </td>
                         </tr>`
                 };
@@ -80,7 +81,6 @@ function get_admin(){
     };
 };
 function deladmin(id){
-    console.log(mode)
     var xhr = new XMLHttpRequest()
     xhr.open('POST', `${location.origin}/api/oparation`);
     xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
@@ -128,9 +128,9 @@ function save(){
             "base_island":getdata("base_island"),
             "seed":getdata("seed"),
             "max_players":getdata("max_players"),
-            "dlc_arid":getdata("dlc_arid"),
-            "dlc_weapons":getdata("dlc_weapons"),
-            "dlc_space":getdata("dlc_space")
+            "dlc_arid":getdata2("dlc_arid"),
+            "dlc_weapons":getdata2("dlc_weapons"),
+            "dlc_space":getdata2("dlc_space")
         }
     };
     xhr.send(JSON.stringify(obj));
@@ -139,4 +139,9 @@ function getdata(id){
     let add_id = document.getElementById(id).value;
     return add_id;
 };
+function getdata2(id){
+    let add_id = document.getElementById(id).checked;
+    return add_id;
+};
 get_profile()
+get_admin()

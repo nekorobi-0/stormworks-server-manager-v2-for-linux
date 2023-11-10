@@ -11,8 +11,6 @@ import class_server as server
 import class_user as user
 import threading
 import settings
-import sys
-sys.setrecursionlimit(2000)
 maintainancing = False
 pages_txt= {}
 #load all users
@@ -205,9 +203,7 @@ class S(BaseHTTPRequestHandler):
                     int(data["proid"]) in [d.get('id') for d in user.profiles]):
                     print(data["mode"])
                     pro = profiles[int(data["proid"])]
-                    if data["mode"] == "save":
-                        self.redirect()
-                    elif data["mode"] == "run":
+                    if data["mode"] == "run":
                         if (len(servers) < settings.server_count and 
                             len(user.runningservers) < user.serverlim):
                             s = server.server(pro,user)
@@ -227,15 +223,19 @@ class S(BaseHTTPRequestHandler):
                         pro.setting["server_data"]["admins"] = n
                         pro.apply()
                     elif data["mode"] == "save":
-                        for i in data["data"]:
+                        print(pro.setting)
+                        for i in data["datas"]:
                             if i in settings.available_settings:
-                                pro.setting["server_data"][f"@{i}"] = data["data"][i]
+                                pro.setting["server_data"][f"@{i}"] = data["datas"][i]
+                        print(pro.setting)
+                        pro.apply()
                         pass
                     elif data["mode"] == "deladmin":
                         admins = pro.setting["server_data"]["admins"]["id"]
+                        print(admins)
                         for admin in enumerate(admins):
                             if admin[1]["@value"] == str(data["id2del"]):
-                                admins.pop(admins[admin[0]])
+                                admins.pop(admin[0])
                         n = {"id":admins}
                         pro.setting["server_data"]["admins"] = n
                         pro.apply()
