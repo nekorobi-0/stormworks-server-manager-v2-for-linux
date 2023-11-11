@@ -36,7 +36,7 @@ function logon() {//サーバーにみすきーの認証をリクエスト
     xhr.onreadystatechange = function(){
         if ((xhr.readyState == 4) && (xhr.status == 200)) {
             url = xhr.responseText;
-            open(url);
+            document.getElementById('show').innerHTML = `<a href="${url}"><p>click me</p></a>`;
         };
     };
 };
