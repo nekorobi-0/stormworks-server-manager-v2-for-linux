@@ -31,9 +31,12 @@ for page in files:
     page = page.replace('websv/',"")
     try:
         if page != "":
-            with open(f"websv/{page}",mode="r",encoding="utf-8") as f:
-                txt = f.read()
-            pages_txt[page] = txt
+            try:
+                with open(f"websv/{page}",mode="r",encoding="utf-8") as f:
+                    txt = f.read()
+                pages_txt[page] = txt
+            except IsADirectoryError:
+                pass
     except PermissionError:
         pass
 print("ended webserver importing")
