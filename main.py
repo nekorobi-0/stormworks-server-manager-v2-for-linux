@@ -105,6 +105,13 @@ class S(BaseHTTPRequestHandler):
             if req[5:]=="logon_url":
                 session.miauth(self,users)
                 print(users)
+            elif (req[5:] == "createprof"):
+                user = users[data["id"]]
+                if (user.seacret == data["seacret"]
+                    and len(user.profiles) < user.profilelimit):
+                    newprof = profile.profile()
+                    profiles[newprof.profile_id] = newprof
+                    user.profiles.append({"name":"newprofile","id":newprof.profile_id})
             elif req[5:] == "login_with_misskey":
                 session.misskeylogin(self,users,mk,sessions)
             elif req[5:10] == "auth/":

@@ -110,12 +110,9 @@ function createprof(){
     var cookie = getCookie();
     var obj = {
         "id":cookie["id"],
-        "seacret":cookie["seacret"],
-        "mode":mode,
-        "proid":id
+        "seacret":cookie["seacret"]
     };
     xhr.send(JSON.stringify(obj));
     xhr.onreadystatechange = function(){
-        window.location.href = `${location.origin}/profileeditor.html`
     };
 }
