@@ -182,9 +182,9 @@ class S(BaseHTTPRequestHandler):
                         for set in pro.setting["server_data"]["admins"]["id"]:
                             admins = pro.setting["server_data"]["admins"]["id"]
                             data_s[int(set["@value"])] = "rocamisaki"
-                        txt = json.dumps(data_s,ensure_ascii=False, indent=4)
                     else:
-                        txt = ""
+                        data_s[-1] = "rocamisaki"
+                    txt = json.dumps(data_s,ensure_ascii=False, indent=4)
                     self._set_headers()
                     self.wfile.write(txt.encode())
             elif req[5:] == "runningserver":
