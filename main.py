@@ -178,10 +178,13 @@ class S(BaseHTTPRequestHandler):
                     int(data["proid"]) in ([int(d.get('id')) for d in user.profiles])):#照合:
                     pro = profiles[int(data["proid"])]
                     data_s = {}
-                    for set in pro.setting["server_data"]["admins"]["id"]:
-                        admins = pro.setting["server_data"]["admins"]["id"]
-                        data_s[int(set["@value"])] = "rocamisaki"
-                    txt = json.dumps(data_s,ensure_ascii=False, indent=4)
+                    if pro.setting["server_data"]["admins"] != None:
+                        for set in pro.setting["server_data"]["admins"]["id"]:
+                            admins = pro.setting["server_data"]["admins"]["id"]
+                            data_s[int(set["@value"])] = "rocamisaki"
+                        txt = json.dumps(data_s,ensure_ascii=False, indent=4)
+                    else:
+                        txt = ""
                     self._set_headers()
                     self.wfile.write(txt.encode())
             elif req[5:] == "runningserver":
