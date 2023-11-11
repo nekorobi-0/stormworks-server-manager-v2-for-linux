@@ -22,9 +22,9 @@ class user:
             self.profiles = []
             self.profilelimit = settings.profilelimit
             self.seacret = randomname(100)
+            self.serverlim = settings.serverlim
             self.export_file()
             print("ok")
-            self.serverlim = settings.serverlim
         self.runningservers = []
     def get_data(self):
         mk = Misskey("stormskey.works",i=self.token)
