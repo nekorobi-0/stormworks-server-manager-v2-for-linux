@@ -29,7 +29,6 @@ function login() {
 };
 function logon() {//サーバーにみすきーの認証をリクエスト
     var xhr = new XMLHttpRequest();
-    logout()
     xhr.open('POST', `${location.origin}/api/logon_url`);
     xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
     xhr.send( 'rocamisaki is very hentai' );
