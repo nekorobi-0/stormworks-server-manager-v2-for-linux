@@ -42,8 +42,11 @@ print("ended webserver importing")
 files = [os.path.basename(p) for p in glob.glob('data/profiles/**', recursive=True)
        if os.path.isfile(p)]
 for file in files:
-    id = int(file[:-4])
-    profiles[id] = profile.profile(id)
+    try:
+        id = int(file[:-4])
+        profiles[id] = profile.profile(id)
+    except ValueError:
+        pass
 print("ended profile importing")
 #/load all profiles
 
@@ -106,12 +109,18 @@ class S(BaseHTTPRequestHandler):
                 session.miauth(self,users)
                 print(users)
             elif (req[5:] == "createprof"):
+                content_len = int(self.headers.get('Content-Length'))
+                output = str(self.rfile.read(content_len).decode('utf-8'))
+                data = json.loads(output)
                 user = users[data["id"]]
                 if (user.seacret == data["seacret"]
                     and len(user.profiles) < user.profilelimit):
-                    newprof = profile.profile()
+                    newprof = profile.profile(-1)
                     profiles[newprof.profile_id] = newprof
                     user.profiles.append({"name":"newprofile","id":newprof.profile_id})
+                user.export_file()
+                self._set_headers()
+                self.wfile.write("success".encode())
             elif req[5:] == "login_with_misskey":
                 session.misskeylogin(self,users,mk,sessions)
             elif req[5:10] == "auth/":
@@ -205,7 +214,7 @@ class S(BaseHTTPRequestHandler):
                         servers.pop(data["proid"])
                         del sv
                     self._set_headers()
-                    self.wfile.write(txt.encode())
+                    self.wfile.write("success".encode())
                 elif (user.seacret == data["seacret"] and
                     int(data["proid"]) in [d.get('id') for d in user.profiles]):
                     print(data["mode"])
@@ -217,10 +226,11 @@ class S(BaseHTTPRequestHandler):
                             servers[data["proid"]] = s
                             user.runningservers.append(data["proid"])
                     elif data["mode"] == "delete":
-                        user.profiles.pop(data["proid"])
+                        for ind,pror in enumerate(user.profiles):
+                            if pror["id"] == int(data["proid"]):
+                                user.profiles.pop(ind)
                         user.export_file()
                         pro.delete()
-                        del pro
                     elif data["mode"] == "addadmin":
                         admins = pro.setting["server_data"]["admins"]["id"]
                         if admins == None:
@@ -247,6 +257,7 @@ class S(BaseHTTPRequestHandler):
                         pro.setting["server_data"]["admins"] = n
                         pro.apply()
                     self._set_headers()
+                    self.wfile.write("success".encode())
                 else:
                     self._set_headers()
                     self.wfile.write("failed".encode())
