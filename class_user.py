@@ -24,7 +24,7 @@ class user:
             self.seacret = randomname(100)
             self.export_file()
             print("ok")
-            self.serverlim = 1
+            self.serverlim = settings.serverlim
         self.runningservers = []
     def get_data(self):
         mk = Misskey("stormskey.works",i=self.token)
