@@ -182,7 +182,8 @@ class S(BaseHTTPRequestHandler):
                         for set in pro.setting["server_data"]["admins"]["id"]:
                             admins = pro.setting["server_data"]["admins"]["id"]
                             print(set)
-                            data_s[int(set["@value"])] = "rocamisaki"
+                            if int(set["@value"]) >0: 
+                                data_s[int(set["@value"])] = "rocamisaki"
                     else:
                         data_s[-1] = "rocamisaki"
                     txt = json.dumps(data_s,ensure_ascii=False, indent=4)
