@@ -199,7 +199,10 @@ class S(BaseHTTPRequestHandler):
                     data_s = {}
                     for sv in svs:
                         data_s[sv] = "rocami"
-                    txt = json.dumps(data_s,ensure_ascii=False, indent=4)
+                    if data_s == {}:
+                        txt = "nothing"
+                    else:
+                        txt = json.dumps(data_s,ensure_ascii=False, indent=4)
                     self._set_headers()
                     self.wfile.write(txt.encode())
                 else:

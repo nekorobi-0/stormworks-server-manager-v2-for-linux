@@ -61,19 +61,21 @@ xhr2.onreadystatechange = function(){
     if ((xhr.readyState == 4) && (xhr.status == 200)) {
         let res = xhr2.responseText
         if (res != "failed"){
-            console.log(res)
-            _return = JSON.parse(res);
             let htmltxt = ""
-            console.log(_return)
-            for (let key in _return){
-                console.log(key)
-                htmltxt += `
-                <tr>
-                    <th scope="row">${key}</th>
-                        <td>
-                            <button type="button" class="btn btn-danger" onclick=reqest("stop",${key})>Stop</button>
-                        </td>
-                </tr>`;
+            if (res != "nothing"){
+                console.log(res)
+                _return = JSON.parse(res);
+                console.log(_return)
+                for (let key in _return){
+                    console.log(key)
+                    htmltxt += `
+                    <tr>
+                        <th scope="row">${key}</th>
+                            <td>
+                                <button type="button" class="btn btn-danger" onclick=reqest("stop",${key})>Stop</button>
+                            </td>
+                    </tr>`;
+                };
             };
             document.getElementById('table').innerHTML = htmltxt;
         };
