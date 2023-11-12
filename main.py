@@ -181,6 +181,7 @@ class S(BaseHTTPRequestHandler):
                     if pro.setting["server_data"]["admins"] != None:
                         for set in pro.setting["server_data"]["admins"]["id"]:
                             admins = pro.setting["server_data"]["admins"]["id"]
+                            print(set["@value"])
                             data_s[int(set["@value"])] = "rocamisaki"
                     else:
                         data_s[-1] = "rocamisaki"
