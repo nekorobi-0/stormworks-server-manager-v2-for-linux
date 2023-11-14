@@ -13,12 +13,8 @@ class server:
         with open(f"stw/sv{self.dir}/server_config.xml","w")as f:
             f.write(prof)
         self.RunningProfile = profile
-<<<<<<< Updated upstream
-        self.server = subprocess.Popen(f"server64 +server_dir sv{str(self.dir)}",
+        self.server = subprocess.Popen(f"start {str(self.dir)} +server_dir sv{str(self.dir)}",
             cwd=r"C:\stormworks-server-manager-v2-for-linux\stw")
-=======
-        self.server = subprocess.Popen(f"wine ~/server/stw/server64.exe +server_dir ~/server/stw/sv{str(self.dir)}",shell=True)
->>>>>>> Stashed changes
         #self.server = subprocess.Popen(f"sv_fake.bat",shell=True)
         print("success")
     def stop(self):
