@@ -28,5 +28,5 @@ class server:
         del self
         return False
     def __del__(self):
-        with open(f"stw/sv{self.dir}/settings.xml","w")as f:
+        with open(f"stw/sv{self.dir}/server_config.xml","w")as f:
             f.write("")
