@@ -20,7 +20,7 @@ class server:
         print("success")
     def stop(self):
         if self.server != None:
-            os.system(f"taskkill /t /f /im C:\stormworks-server-manager-v2-for-linux\stw\{str(self.dir)}.exe")
+            os.system(f"taskkill /t /f /im C:\stormworks-server-manager-v2-for-linux\stw\sv{str(self.dir)}.exe")
             self.server.kill()
             ServerAllocator.servers[self.dir] = False
     def check_status(self):
