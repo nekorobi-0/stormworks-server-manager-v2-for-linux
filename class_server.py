@@ -16,7 +16,8 @@ class server:
         self.RunningProfile = profile
         print(f"start sv{str(self.dir)}.exe +server_dir sv{str(self.dir)}")
         self.server = subprocess.Popen(f"sv{str(self.dir)}.exe +server_dir sv{str(self.dir)}",
-            cwd=r"C:\stormworks-server-manager-v2-for-linux\stw")
+            cwd=r"C:\stormworks-server-manager-v2-for-linux\stw",
+            creationflags=subprocess.CREATE_NEW_CONSOLE)
         #self.server = subprocess.Popen(f"sv_fake.bat",shell=True)
         print("success")
     def stop(self):
