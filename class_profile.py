@@ -18,6 +18,7 @@ class profile():
             xml_data = tree.getroot()
             xmlstr = ET.tostring(xml_data, encoding='utf-8', method='xml')
             self.setting = dict(xmltodict.parse(xmlstr))
+            self.setting["server_data"][f"@save_name"] = str(self.profile_id)
             self.apply()
         else:
             self.profile_id = profile_id
@@ -26,6 +27,8 @@ class profile():
             xmlstr = ET.tostring(xml_data, encoding='utf-8', method='xml')
             self.setting = dict(xmltodict.parse(xmlstr))
             self.profile_id = profile_id
+            self.setting["server_data"][f"@save_name"] = str(self.profile_id)
+            self.apply()
         self.path = f"data/profiles/{self.profile_id}.xml"
 
         
