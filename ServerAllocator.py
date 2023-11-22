@@ -2,7 +2,10 @@ import settings,os,shutil
 servers = []
 for i in range(settings.server_count):
     servers.append(False)
-    shutil.copy("stw/server64.exe",f"stw/sv{i}.exe")
+    try:
+        shutil.copy("stw/server64.exe",f"stw/sv{i}.exe")
+    except PermissionError:
+        pass
     if not(os.path.isdir(f"stw/sv{i}")):
         os.mkdir(f"stw/sv{i}")
 def Allocator()->int:
