@@ -252,6 +252,7 @@ class S(BaseHTTPRequestHandler):
                         pro.apply()
                     elif data["mode"] == "save":
                         print(pro.setting)
+                        pro.setting["server_data"][f"@save_name"] = str(pro.profile_id)
                         for i in data["datas"]:
                             if i in settings.available_settings:
                                 pro.setting["server_data"][f"@{i}"] = data["datas"][i]
